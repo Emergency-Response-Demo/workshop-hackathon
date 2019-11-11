@@ -1,4 +1,5 @@
-stub/.factorypath
-stub/.settings/
-stub/target/
-stub/.classpath
+**/.factorypath
+**/.settings/
+**/target/
+**/.classpath
+**/.project

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>com.redhat.cajun.navy</groupId>
   <artifactId>incident-service-fuse-impl</artifactId>
   <version>1.0.0-SNAPSHOT</version>
@@ -71,10 +70,29 @@
         <groupId>org.springframework.kafka</groupId>
         <artifactId>spring-kafka</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-kafka</artifactId>
+    <!-- use the same version as your Camel core version -->
+</dependency>
     <!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-tx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-sql-starter</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <scope>runtime</scope>
+        <version>1.4.199</version>
     </dependency>
     <!-- TODO end of added section -->
     <dependency>
@@ -111,7 +129,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-jackson-starter</artifactId>
+      <artifactId>camel-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>

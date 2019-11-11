@@ -8,6 +8,6 @@ public class ResetRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         from("direct:reset")
-            .log("Reset incident database");
+            .to("sql:delete from incident");
     }
 }
