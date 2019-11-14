@@ -4,6 +4,7 @@
         <artifactId>incident-service-fuse</artifactId>
         <groupId>com.redhat.cajun.navy</groupId>
         <version>1.0</version>
+        <relativePath>..</relativePath>
     </parent>
  <modelVersion>4.0.0</modelVersion>
 
