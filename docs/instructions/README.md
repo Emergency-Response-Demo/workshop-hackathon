@@ -18,7 +18,7 @@ As you saw in our [architectural diagram](https://www.erdemo.io/architecture/) w
 * After the presentation, we'll discuss the solutions and move on from there.
 
 For providing the implementation, you'll need some further information.
-1. IncidentServiceAPISpec.md
-2. IncidentServiceDeployGuide.md
+1. [Incident API Specification](IncidentServiceAPISpec.md)
+2. [Incident Deployment Guide](IncidentServiceDeployGuide.md)
 
 If you are still in doubt about anything, feel free to reach out to one of the tech leads.
