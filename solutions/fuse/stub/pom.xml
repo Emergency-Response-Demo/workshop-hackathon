@@ -4,10 +4,10 @@
         <artifactId>incident-service-fuse</artifactId>
         <groupId>com.redhat.cajun.navy</groupId>
         <version>1.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
  <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.redhat.cajun.navy</groupId>
   <artifactId>incident-service-fuse-stub</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
