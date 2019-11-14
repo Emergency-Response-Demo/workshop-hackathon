@@ -219,11 +219,20 @@
       <artifactId>resteasy-multipart-provider</artifactId>
       <version>3.5.0.Final</version>
     </dependency>
+    <!-- use if you want to use s2i the easy way -->
     <dependency>
       <groupId>com.redhat.cajun.navy</groupId>
       <artifactId>incident-service-fuse-stub</artifactId>
       <version>1.0.0-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/incident-service-fuse-stub-1.0.0-SNAPSHOT.jar</systemPath>
     </dependency>
+    <!-- recommended approach, but require a local nexus repo or a build pipeline with same .m2 folder
+    <dependency>
+      <groupId>com.redhat.cajun.navy</groupId>
+      <artifactId>incident-service-fuse-stub</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency> -->
 
     <!--
     <dependency>
