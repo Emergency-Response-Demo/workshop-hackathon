@@ -9,4 +9,4 @@ Any implementation of the Incident Service must comply with the following guidel
 * There are no requirements on specific storage solutions, but keep in mind that we work with microservices, so solutions which enable moving workloads easily are preferred.
 * The incident service must notify other services on any incidents received. This is done by posting to a Kafka Topic.
 
-[comment]: TOOD describe the Kafka topic interface.
+[//]: # "TOOD describe the Kafka topic interface."
