@@ -56,7 +56,7 @@ public class IncidentRoute extends RouteBuilder {
                     Map incidentValues = (Map) exchange.getProperty("body");
                     //report that a new incident has been recorded.
                     Message<IncidentReportedEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
-                    new IncidentReportedEvent.Builder((String) exchange.getIn().getHeader("externalID")),
+                    new IncidentReportedEvent.Builder((String) exchange.getIn().getHeader("externalID"))
                             .lat(new BigDecimal(incidentValues.get("lat").toString()))
                             .lon(new BigDecimal(incidentValues.get("lon").toString()))
                             .medicalNeeded(new Boolean(incidentValues.get("medicalNeeded").toString()))
