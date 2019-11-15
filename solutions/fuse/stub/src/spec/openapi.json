@@ -119,6 +119,7 @@
         "Incident": {
             "description": "",
             "required": [
+                "id",
                 "lat",
                 "lon",
                 "numberOfPeople",
@@ -155,7 +156,7 @@
                     "description": "",
                     "type": "string"
                 },
-                "incidentId": {
+                "id": {
                     "description": "",
                     "type": "string"
                 },

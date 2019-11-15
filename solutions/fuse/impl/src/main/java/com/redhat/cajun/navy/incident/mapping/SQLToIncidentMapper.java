@@ -20,13 +20,13 @@ public class SQLToIncidentMapper implements Processor {
         List<Incident> incidents = new LinkedList<Incident>();
         incidentRows.forEach(row -> {
             incidents.add(new IncidentBuilder()
+                .id(row.get("incident_id").toString())
                 .latitude(row.get("latitude").toString())
                 .longitude(row.get("longitude").toString())
                 .numberOfPeople(Integer.parseInt(row.get("number_of_people").toString()))
                 .medicalNeeded(Boolean.parseBoolean(row.get("medical_needed").toString()))
                 .victimName(row.get("victim_name").toString())
                 .victimPhoneNumber(row.get("victim_phone_number").toString())
-                .incidentId(row.get("id").toString())
                 .reportedTime(Long.parseLong(row.get("reported_time").toString()))
                 .version(Integer.parseInt(row.get("version").toString()))
                 .status(Incident.StatusEnum.valueOf(row.get("status").toString()))

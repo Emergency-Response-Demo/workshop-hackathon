@@ -6,8 +6,8 @@ public class IncidentBuilder {
         incident = new Incident();
     }
 
-    public IncidentBuilder incidentId(String incidentId) {
-        incident.setIncidentId(incidentId);
+    public IncidentBuilder id(String id) {
+        incident.setId(id);
         return this;
     }
 

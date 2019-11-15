@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS incident;
 
 CREATE TABLE incident (
   id BIGINT AUTO_INCREMENT  PRIMARY KEY,
+  incident_id VARCHAR(36),
   latitude VARCHAR(20),
   longitude VARCHAR(20),
   number_of_people INT,
