@@ -1,6 +1,5 @@
 package com.redhat.cajun.navy.incident.routes;
 
-import com.redhat.cajun.navy.incident.entity.IncidentBuilder;
 import org.apache.camel.Processor;
 import org.apache.camel.Exchange;
 import org.apache.camel.model.dataformat.JsonLibrary;
@@ -11,12 +10,13 @@ import java.math.BigDecimal;
 import org.apache.camel.model.rest.RestBindingMode;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.springframework.stereotype.Component;
+import org.apache.camel.component.kafka.KafkaConstants;
 
-import java.util.LinkedList;
+import com.redhat.cajun.navy.incident.mapping.SQLToIncidentMapper;
+
 import java.util.Map;
+import java.util.UUID;
 
-import com.redhat.cajun.navy.incident.entity.Incident;
 
 @Component
 public class IncidentRoute extends RouteBuilder {
@@ -43,23 +43,25 @@ public class IncidentRoute extends RouteBuilder {
             .process(new SQLToIncidentMapper(true));
 
         from("direct:createIncident")
-            .streamCaching()
-            .log("received message was: ${body}")
+            .setProperty("body", simple("${body}"))
+            .log("createIncident - received message was: ${property.body}")
             //write incident to database
+            .setHeader("messageReceived", constant(System.currentTimeMillis()))
+            .setHeader("externalID", constant(UUID.randomUUID().toString()))
             .to("sql:classpath:sql/insert_incident.sql")
             //prepare message for Kafka event
             .process(new Processor(){
                 @Override
                 public void process(Exchange exchange) throws Exception {
-                    Map incidentValues = (Map) exchange.getIn().getBody();
+                    Map incidentValues = (Map) exchange.getProperty("body");
                     //report that a new incident has been recorded.
                     Message<IncidentReportedEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
-                    new IncidentReportedEvent.Builder(incidentValues.get("incidentId").toString())
-                            .lat(new BigDecimal(incidentValues.get("latitude").toString()))
-                            .lon(new BigDecimal(incidentValues.get("longitude").toString()))
+                    new IncidentReportedEvent.Builder((String) exchange.getIn().getHeader("externalID"))
+                            .lat(new BigDecimal(incidentValues.get("lat").toString()))
+                            .lon(new BigDecimal(incidentValues.get("lon").toString()))
                             .medicalNeeded(new Boolean(incidentValues.get("medicalNeeded").toString()))
                             .numberOfPeople(new Integer(incidentValues.get("numberOfPeople").toString()))
-                            .timestamp(new Long(incidentValues.get("reportedTime").toString()))
+                            .timestamp(new Long(exchange.getIn().getHeader("messageReceived").toString()))
                             .build())
                     .build();
                     exchange.getIn().setBody(message);
@@ -67,6 +69,7 @@ public class IncidentRoute extends RouteBuilder {
             })
             //send to Kafka
             .marshal().json(JsonLibrary.Jackson)
+            .setHeader(KafkaConstants.KEY, simple("${headers.externalID}"))
             .to("{{sender.destination.incident-reported-event}}");
             
     }

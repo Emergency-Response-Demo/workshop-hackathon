@@ -119,24 +119,24 @@
         "Incident": {
             "description": "",
             "required": [
-                "latitude",
-                "longitude",
+                "id",
+                "lat",
+                "lon",
                 "numberOfPeople",
                 "medicalNeeded",
                 "victimName",
                 "victimPhoneNumber",
-                "incidentId",
                 "reportedTime",
                 "version",
                 "status"
             ],
             "type": "object",
             "properties": {
-                "latitude": {
+                "lat": {
                     "description": "",
                     "type": "string"
                 },
-                "longitude": {
+                "lon": {
                     "description": "",
                     "type": "string"
                 },
@@ -156,7 +156,7 @@
                     "description": "",
                     "type": "string"
                 },
-                "incidentId": {
+                "id": {
                     "description": "",
                     "type": "string"
                 },
@@ -174,7 +174,8 @@
                     "enum": [
                         "REQUESTED",
                         "ASSIGNED",
-                        "COMPLETED"
+                        "COMPLETED",
+                        "REPORTED"
                     ],
                     "type": "string"
                 }

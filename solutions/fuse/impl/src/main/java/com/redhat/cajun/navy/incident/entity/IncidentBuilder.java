@@ -6,18 +6,18 @@ public class IncidentBuilder {
         incident = new Incident();
     }
 
-    public IncidentBuilder incidentId(String incidentId) {
-        incident.setIncidentId(incidentId);
+    public IncidentBuilder id(String id) {
+        incident.setId(id);
         return this;
     }
 
     public IncidentBuilder latitude(String latitude) {
-        incident.setLatitude(latitude);
+        incident.setLat(latitude);
         return this;
     }
 
     public IncidentBuilder longitude(String longitude) {
-        incident.setLongitude(longitude);
+        incident.setLon(longitude);
         return this;
     }
 
@@ -43,6 +43,11 @@ public class IncidentBuilder {
 
     public IncidentBuilder reportedTime(long timestamp) {
         incident.setReportedTime(timestamp);
+        return this;
+    }
+
+    public IncidentBuilder version(int version) {
+        incident.setVersion(version);
         return this;
     }
 
