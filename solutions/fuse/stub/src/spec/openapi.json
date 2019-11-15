@@ -176,7 +176,8 @@
                         "ASSIGNED",
                         "COMPLETED",
                         "REPORTED",
-                        "RESCUED"
+                        "RESCUED",
+                        "PICKEDUP"
                     ],
                     "type": "string"
                 }
