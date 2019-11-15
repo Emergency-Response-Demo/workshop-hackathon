@@ -44,6 +44,7 @@ public class IncidentRoute extends RouteBuilder {
 
         from("direct:createIncident")
             .streamCaching()
+            .log("received message was: ${body}")
             //write incident to database
             .to("sql:classpath:sql/insert_incident.sql")
             //prepare message for Kafka event
