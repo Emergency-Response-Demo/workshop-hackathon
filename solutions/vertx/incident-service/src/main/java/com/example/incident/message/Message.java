@@ -1,5 +1,7 @@
 package com.example.incident.message;
 
+import io.vertx.core.json.Json;
+
 import java.util.UUID;
 
 public class Message<T> {
@@ -61,5 +63,10 @@ public class Message<T> {
     public Message<T> build() {
       return message;
     }
+  }
+
+  @Override
+  public String toString() {
+    return Json.encode(this);
   }
 }

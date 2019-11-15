@@ -7,6 +7,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -39,22 +40,26 @@ public class IncidentResource extends AbstractVerticle {
     int port = config().getInteger("http.port", 8080);
     vertx.eventBus().consumer("in.queue", this::onMessage);
 
+
     // router config
     Router router = Router.router(vertx);
     router.route().handler(BodyHandler.create());
-    router.route("/incidents*").handler(BodyHandler.create());
 
-    /*router.get(INCIDENTS_EP).handler(this::getAll);
+    router.route("/").handler(routingContext -> {
+      HttpServerResponse response = routingContext.response();
+      response
+        .putHeader("content-type", "text/html")
+        .end("Incidents API");
+    });
+
+    router.post("/incidents").handler(this::addOne);
+    router.get(INCIDENTS_EP).handler(this::getAll);
     router.get(INCIDENTS_EP + "/:status").handler(this::getStatus);
     router.get(INCIDENTS_EP + "/incident/:id").handler(this::getById);
     router.get(INCIDENTS_EP + "/victim/byname/:name").handler(this::getByName);
-
-
     router.post(INCIDENTS_EP + "/reset").handler(this::reset);
-   */
 
-    router.post(INCIDENTS_EP).handler(this::addOne);
-
+    //vertx.createHttpServer().requestHandler(router).listen(8080);
     // HTTP server top listen on
     vertx.createHttpServer()
       .requestHandler(router)
@@ -126,6 +131,7 @@ public class IncidentResource extends AbstractVerticle {
 
   private void addOne(RoutingContext routingContext) {
     Incident incident = Json.decodeValue(routingContext.getBodyAsString(), Incident.class);
+    logger.info("Processing: "+incident);
     incidents.put(incident.getId(), incident);
     sendIncidentEvent(incident);
     routingContext.response()
@@ -168,7 +174,6 @@ public class IncidentResource extends AbstractVerticle {
     }
   }
 
-
   private void sendIncidentEvent(Incident incident) {
     com.example.incident.message.Message<IncidentReportedEvent> message = new com.example.incident.message.Message.Builder<>("IncidentReportedEvent", "IncidentService",
       new IncidentReportedEvent.Builder(incident.getId())
@@ -180,6 +185,7 @@ public class IncidentResource extends AbstractVerticle {
         .build())
       .build();
 
+    logger.info(message.toString());
     DeliveryOptions options = new DeliveryOptions().addHeader("action", "PUBLISH_EVENT").addHeader("key", incident.getId());
     vertx.eventBus().send("out.queue", message.toString(), options, reply -> {
       if (reply.failed()) {
