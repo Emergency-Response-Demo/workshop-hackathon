@@ -70,7 +70,9 @@ public class IncidentRoute extends RouteBuilder {
             //send to Kafka
             .marshal().json(JsonLibrary.Jackson)
             .setHeader(KafkaConstants.KEY, simple("${headers.externalID}"))
-            .to("{{sender.destination.incident-reported-event}}");
+            .to("{{sender.destination.incident-reported-event}}")
+            .setBody(simple("${null}"))
+            .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(201));
             
     }
 }

@@ -14,7 +14,7 @@ public class UpdateIncidentListener extends RouteBuilder {
         .streamCaching()
         .log(LoggingLevel.INFO, "Read message from Kafka body is: ${body}")
         .unmarshal().json(JsonLibrary.Jackson, LinkedHashMap.class)
-        .log("updating incident with id: ${body['body']['incident']['incidentId']}")
+        .log("updating incident with id: ${body['body']['incident']['id']}")
         .to("sql:classpath:sql/update_incident.sql")
         .log("incident update recorded");            
     }
