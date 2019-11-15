@@ -41,7 +41,7 @@ public class IncidentProducer extends AbstractVerticle {
     String action = message.headers().get("action");
     String key = message.headers().get("key");
     switch (action) {
-      case "PUBLISH_UPDATE":
+      case "PUBLISH_EVENT":
         sendMessage(incidentReportedEvent, key, String.valueOf(message.body()));
         message.reply("Message sent "+ incidentReportedEvent);
         break;

@@ -24,7 +24,7 @@ public class IncidentConsumer extends AbstractVerticle {
     consumer = KafkaConsumer.create(vertx, getConfig(config()));
 
     consumer.handler(record -> {
-      DeliveryOptions options = new DeliveryOptions().addHeader("action", "update-incident");
+      DeliveryOptions options = new DeliveryOptions().addHeader("action", "UPDATE_INCIDENT");
       vertx.eventBus().send("in.queue", record.value(), options, reply -> {
         if (reply.succeeded()) {
           logger.debug("Message accepted");
