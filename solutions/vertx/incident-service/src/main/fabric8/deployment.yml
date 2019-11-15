@@ -1,0 +1,31 @@
+spec:
+  template:
+    spec:
+      # Declare a volume mounting the config map
+      volumes:
+        - configMap:
+            # Name of the config map
+            name: incident-service
+            # Define the items from the config map to mount
+            items:
+              - key: app-config.properties
+                path: app-config.properties
+            # Volume name (used as reference below)
+          name: config
+      containers:
+        - name: incident-service
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: APP_CONFIGMAP_NAME
+              value: incident-service
+            - name: APP_CONFIGMAP_KEY
+              value: app-config.properties
+          # Mount the volume define above in /deployments/config
+          volumeMounts:
+            - name: config
+              mountPath: /deployments/config
+
