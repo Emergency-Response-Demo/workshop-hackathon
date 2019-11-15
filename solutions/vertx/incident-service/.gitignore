@@ -62,7 +62,7 @@ local.properties
 .idea/**/tasks.xml
 .idea/dictionaries
 
-.editorconfig
+.editorconfigit cog
 .mvn/**
 
 # Sensitive or high-churn files:

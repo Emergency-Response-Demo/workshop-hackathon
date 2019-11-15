@@ -1,0 +1,231 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Incident",
+        "version": "1.0.1"
+    },
+    "paths": {
+        "/incidents": {
+            "summary": "Path used to manage the list of Incidents.",
+            "description": "The REST endpoint/path used to list and create zero or more `Incident` entities.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Incident"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `Incident` entities."
+                    }
+                },
+                "operationId": "getIncidents",
+                "summary": "List All Incidents",
+                "description": "Gets a list of all `Incident` entities."
+            },
+            "post": {
+                "requestBody": {
+                    "description": "A new `Incident` to be created.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Incident"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "createIncident",
+                "summary": "Create a Incident",
+                "description": "Creates a new instance of a `Incident`."
+            }
+        },
+        "/incidents/incident/{incidentId}": {
+            "summary": "Path used to manage a single Incident.",
+            "description": "The REST endpoint/path used to get, update, and delete single instances of an `Incident`.  This path contains `GET`, `PUT`, and `DELETE` operations used to perform the get, update, and delete tasks, respectively.",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "incidentId",
+                        "description": "A unique identifier for a `Incident`.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Incident"
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns a single `Incident`."
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "Returns an `Error` response."
+                    }
+                },
+                "operationId": "getIncident",
+                "summary": "Get a Incident",
+                "description": "Gets the details of a single instance of a `Incident`."
+            },
+            "parameters": [
+                {
+                    "name": "incidentId",
+                    "description": "A unique identifier for a `Incident`.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/incidents/{status}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Incident"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "A list of incidents with the given status."
+                    }
+                },
+                "operationId": "getIncidentByStatus",
+                "summary": "Get an incident by status",
+                "description": "Get all incidents by a status."
+            }
+        },
+        "/incidents/victim/byname/{name}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Incident"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "getIncidentsByVictimName",
+                "summary": "Get incidents by victim name.",
+                "description": "Get all incidents for a victim."
+            }
+        },
+        "/reset": {
+            "post": {
+                "responses": {
+                    "200": {}
+                },
+                "operationId": "reset",
+                "summary": "Reset the incident database.",
+                "description": "Delete all incidents from the database."
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Incident": {
+                "required": [
+                    "latitude",
+                    "longitude",
+                    "numberOfPeople",
+                    "medicalNeeded",
+                    "victimName",
+                    "victimPhoneNumber",
+                    "incidentId",
+                    "reportedTime",
+                    "version"
+                ],
+                "type": "object",
+                "properties": {
+                    "numberOfPeople": {
+                        "type": "integer"
+                    },
+                    "victimName": {
+                        "description": "Victim's full name",
+                        "type": "string"
+                    },
+                    "victimPhoneNumber": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "REQUESTED",
+                            "ASSIGNED",
+                            "COMPLETED"
+                        ]
+                    },
+                    "incidentId": {
+                        "type": "string"
+                    },
+                    "medicalNeeded": {
+                        "type": "boolean"
+                    },
+                    "latitude": {
+                        "type": "string"
+                    },
+                    "longitude": {
+                        "type": "string"
+                    },
+                    "reportedTime": {
+                        "type": "integer"
+                    },
+                    "version": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            },
+            "Error": {
+                "required": [
+                    "code",
+                    "message"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
