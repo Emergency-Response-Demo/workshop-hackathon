@@ -11,8 +11,10 @@ import java.math.BigDecimal;
 import org.apache.camel.model.rest.RestBindingMode;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.springframework.stereotype.Component;
+import org.apache.camel.component.sql.SqlConstants;
+import com.redhat.cajun.navy.incident.mapping.SQLToIncidentMapper;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -39,27 +41,33 @@ public class IncidentRoute extends RouteBuilder {
             .process(new SQLToIncidentMapper(false));
 
         from("direct:getIncident")
-            .to("sql:select * from incident where incident_id = :#${header['incidentId']}")
+            .to("sql:select * from incident where id = :#${header['incidentId']}")
             .process(new SQLToIncidentMapper(true));
 
         from("direct:createIncident")
-            .streamCaching()
-            .log("received message was: ${body}")
+            .setProperty("body", simple("${body}"))
+            .log("received message was: ${property.body}")
             //write incident to database
+            .setHeader(SqlConstants.SQL_RETRIEVE_GENERATED_KEYS, constant(true))
+            .setHeader(SqlConstants.SQL_GENERATED_COLUMNS, constant(new String[] {"ID"}))
+            .setHeader("messageReceived", constant(System.currentTimeMillis()))
             .to("sql:classpath:sql/insert_incident.sql")
+            .log("${headers}")
             //prepare message for Kafka event
             .process(new Processor(){
                 @Override
                 public void process(Exchange exchange) throws Exception {
-                    Map incidentValues = (Map) exchange.getIn().getBody();
+                    Map incidentValues = (Map) exchange.getProperty("body");
+                    ArrayList<Map> generatedColumns = 
+                        (ArrayList<Map>) exchange.getIn().getHeader("CamelSqlGeneratedKeyRows");
                     //report that a new incident has been recorded.
                     Message<IncidentReportedEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
-                    new IncidentReportedEvent.Builder(incidentValues.get("incidentId").toString())
-                            .lat(new BigDecimal(incidentValues.get("latitude").toString()))
-                            .lon(new BigDecimal(incidentValues.get("longitude").toString()))
+                    new IncidentReportedEvent.Builder(generatedColumns.get(0).get("ID").toString())
+                            .lat(new BigDecimal(incidentValues.get("lat").toString()))
+                            .lon(new BigDecimal(incidentValues.get("lon").toString()))
                             .medicalNeeded(new Boolean(incidentValues.get("medicalNeeded").toString()))
                             .numberOfPeople(new Integer(incidentValues.get("numberOfPeople").toString()))
-                            .timestamp(new Long(incidentValues.get("reportedTime").toString()))
+                            .timestamp(new Long(exchange.getIn().getHeader("messageReceived").toString()))
                             .build())
                     .build();
                     exchange.getIn().setBody(message);
