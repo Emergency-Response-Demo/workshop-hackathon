@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import org.apache.camel.model.rest.RestBindingMode;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.kafka.KafkaConstants;
+
 import com.redhat.cajun.navy.incident.mapping.SQLToIncidentMapper;
 
 import java.util.Map;
@@ -42,7 +44,7 @@ public class IncidentRoute extends RouteBuilder {
 
         from("direct:createIncident")
             .setProperty("body", simple("${body}"))
-            .log("received message was: ${property.body}")
+            .log("createIncident - received message was: ${property.body}")
             //write incident to database
             .setHeader("messageReceived", constant(System.currentTimeMillis()))
             .setHeader("externalID", constant(UUID.randomUUID()))
@@ -67,6 +69,7 @@ public class IncidentRoute extends RouteBuilder {
             })
             //send to Kafka
             .marshal().json(JsonLibrary.Jackson)
+            .setHeader(KafkaConstants.KEY, constant("IncidentService"))
             .to("{{sender.destination.incident-reported-event}}");
             
     }
