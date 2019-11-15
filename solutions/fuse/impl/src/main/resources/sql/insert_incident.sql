@@ -8,7 +8,7 @@ INSERT INTO incident (incident_id,
                       reported_time,
                       version,
                       status)
-VALUES (:#${headers.externalID},
+VALUES (:#${exchange.exchangeId},
         :#${property.body['lat']},
         :#${property.body['lon']},
         :#${property.body['numberOfPeople']},

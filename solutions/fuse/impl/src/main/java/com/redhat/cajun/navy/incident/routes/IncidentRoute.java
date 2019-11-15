@@ -15,7 +15,6 @@ import org.apache.camel.component.kafka.KafkaConstants;
 import com.redhat.cajun.navy.incident.mapping.SQLToIncidentMapper;
 
 import java.util.Map;
-import java.util.UUID;
 
 
 @Component
@@ -25,6 +24,8 @@ public class IncidentRoute extends RouteBuilder {
         restConfiguration().component("servlet")
             .bindingMode(RestBindingMode.json)
             .skipBindingOnErrorCode(false);
+        
+        getContext().setUuidGenerator(new org.apache.camel.impl.JavaUuidGenerator());
 
         from("direct:getIncidents")
             .to("sql:select * from incident")
@@ -46,8 +47,7 @@ public class IncidentRoute extends RouteBuilder {
             .setProperty("body", simple("${body}"))
             .log("createIncident - received message was: ${property.body}")
             //write incident to database
-            .setHeader("messageReceived", constant(System.currentTimeMillis()))
-            .setHeader("externalID", constant(UUID.randomUUID().toString()))
+            .setHeader("messageReceived", simple("bean:java.lang.System?method=currentTimeMillis"))
             .to("sql:classpath:sql/insert_incident.sql")
             //prepare message for Kafka event
             .process(new Processor(){
@@ -56,7 +56,7 @@ public class IncidentRoute extends RouteBuilder {
                     Map incidentValues = (Map) exchange.getProperty("body");
                     //report that a new incident has been recorded.
                     Message<IncidentReportedEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
-                    new IncidentReportedEvent.Builder((String) exchange.getIn().getHeader("externalID"))
+                    new IncidentReportedEvent.Builder((String) exchange.getExchangeId())
                             .lat(new BigDecimal(incidentValues.get("lat").toString()))
                             .lon(new BigDecimal(incidentValues.get("lon").toString()))
                             .medicalNeeded(new Boolean(incidentValues.get("medicalNeeded").toString()))
