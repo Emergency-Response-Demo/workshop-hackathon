@@ -1,13 +1,11 @@
 #!/bin/bash
-echo "Before assembling"
 
 /usr/local/s2i/assemble
 rc=$?
 
 if [ $rc -eq 0 ]; then
-    echo "After successful assembling"
-else
-    echo "After failed assembling"
+    echo "After successful assembling, copy jar file to expected location"
+    cp /tmp/src/impl/target/*.jar /deployments
 fi
 
 exit $rc
