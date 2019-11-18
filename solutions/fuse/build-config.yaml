@@ -4,20 +4,6 @@ metadata:
   name: "incident-service-build" 
 spec:
   runPolicy: "Serial" 
-  triggers: 
-    -
-      type: "GitHub"
-      github:
-        secret: "secret101"
-    - type: "Generic"
-      generic:
-        secret: "secret101"
-    -
-      type: "ImageChange"
-  source:
-    contextDir: /solutions/fuse
-    git:
-      uri: "https://github.com/Emergency-Response-Demo/workshop-hackathon"
   strategy: 
     sourceStrategy:
       from:
