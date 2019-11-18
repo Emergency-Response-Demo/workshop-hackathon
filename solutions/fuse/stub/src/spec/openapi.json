@@ -188,3 +188,29 @@ definitions:
             body:
                 $ref: '#/definitions/Incident'
                 description: ''
+    IncidentReportedEventMessage:
+        description: ''
+        required:
+            - id
+            - messageType
+            - invokingService
+            - timestamp
+            - body
+        type: object
+        properties:
+            id:
+                description: ''
+                type: string
+            messageType:
+                description: ''
+                type: string
+            invokingService:
+                description: ''
+                type: string
+            timestamp:
+                format: int64
+                description: ''
+                type: integer
+            body:
+                $ref: '#/definitions/IncidentReportedEvent'
+                description: ''

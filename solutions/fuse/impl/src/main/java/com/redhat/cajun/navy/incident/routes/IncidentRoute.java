@@ -4,8 +4,9 @@ import org.apache.camel.Processor;
 import org.apache.camel.Exchange;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.stereotype.Component;
-import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
-import com.redhat.cajun.navy.incident.message.Message;
+
+import com.redhat.cajun.navy.incident.entity.IncidentReportedEventMessageBuilder;
+import com.redhat.cajun.navy.incident.entity.IncidentReportedEventMessage;
 import java.math.BigDecimal;
 import org.apache.camel.model.rest.RestBindingMode;
 
@@ -55,14 +56,12 @@ public class IncidentRoute extends RouteBuilder {
                 public void process(Exchange exchange) throws Exception {
                     Map incidentValues = (Map) exchange.getProperty("body");
                     //report that a new incident has been recorded.
-                    Message<IncidentReportedEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
-                    new IncidentReportedEvent.Builder((String) exchange.getExchangeId())
+                    IncidentReportedEventMessage message = new IncidentReportedEventMessageBuilder((String) exchange.getExchangeId(), "IncidentService")
                             .lat(new BigDecimal(incidentValues.get("lat").toString()))
                             .lon(new BigDecimal(incidentValues.get("lon").toString()))
                             .medicalNeeded(new Boolean(incidentValues.get("medicalNeeded").toString()))
                             .numberOfPeople(new Integer(incidentValues.get("numberOfPeople").toString()))
                             .timestamp(new Long(exchange.getIn().getHeader("messageReceived").toString()))
-                            .build())
                     .build();
                     exchange.getIn().setBody(message);
                 }
