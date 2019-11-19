@@ -32,22 +32,17 @@ In order to connect to the Kafka server, use the following url _kafka-cluster-ka
 Example of _IncidentReportedEvent_:
 ```
 {
-  "id":"b23a343c-2f2d-471c-baf1-e245b2a12ee8",
+  "id":"fe6bcee7-5447-4b0d-8c7f-a9ca4f10eb14",
   "messageType":"IncidentReportedEvent",
   "invokingService":"IncidentService",
-  "timestamp":1573743054009,
-  "body":
-  {
-    "incident":
-    {
-      "id": 1
-      "incidentId":"1111",
-      "latitude":444,
-      "longitude":444,
-      "numberOfPeople":12,
-      "medicalNeeded":true,
-      "reportedTime":1573464689
-    }
+  "timestamp":1573513503569,
+  "body":{
+    "id":"fe6bcee7-5447-4b0d-8c7f-a9ca4f10eb14",
+    "lat":55.693615,
+    "lon":12.567255,
+    "numberOfPeople":12,
+    "medicalNeeded":true,
+    "timestamp":1573464689
   }
 }
 ```
