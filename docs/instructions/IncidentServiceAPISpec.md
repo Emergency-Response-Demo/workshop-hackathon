@@ -64,4 +64,4 @@ Example of _UpdateIncidentCommand_:
 ```
 
 ## Health service
-TBD
+A full implementation must provide an endpoint _/actuator/health_, which can tell wether the service is up and running. Only requirement is, that it returns http code 200 if the service is up.
