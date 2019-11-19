@@ -1,216 +1,294 @@
-swagger: '2.0'
-info:
-    title: Incident
-    version: 1.0.0
-paths:
-    /incidents:
-        get:
-            responses:
-                '200':
-                    description: Get a list of all incidents.
-                    schema:
-                        type: array
-                        items:
-                            $ref: '#/definitions/Incident'
-            operationId: getIncidents
-            summary: List All Incidents
-            description: Gets a list of all `Incident` entities.
-        post:
-            parameters:
-                -
-                    name: body
-                    description: A new `Incident` to be created.
-                    schema:
-                        $ref: '#/definitions/Incident'
-                    in: body
-                    required: true
-            responses:
-                '201':
-                    description: Successful response.
-            operationId: createIncident
-            summary: Create a Incident
-            description: Creates a new instance of a `Incident`.
-    '/incidents/incident/{incidentId}':
-        get:
-            parameters:
-                -
-                    name: incidentId
-                    description: A unique identifier for a `Incident`.
-                    in: path
-                    required: true
-                    type: string
-            responses:
-                '200':
-                    description: Successful response - returns a single `Incident`.
-                    schema:
-                        $ref: '#/definitions/Incident'
-            operationId: getIncident
-            summary: Path used to manage a single Incident.
-            description: Gets the details of a single instance of a `Incident`.
-    '/incidents/{status}':
-        get:
-            responses:
-                '200':
-                    description: A list of incidents with the given status.
-                    schema:
-                        type: array
-                        items:
-                            $ref: '#/definitions/Incident'
-            operationId: getIncidentByStatus
-            summary: Get an incident by status
-            description: Get all incidents by a status.
-    '/incidents/victim/byname/{name}':
-        get:
-            responses:
-                '200':
-                    description: A list of incidents.
-                    schema:
-                        type: array
-                        items:
-                            $ref: '#/definitions/Incident'
-            operationId: getIncidentsByVictimName
-            summary: Get incidents by victim name.
-            description: Get all incidents for a victim.
-    /reset:
-        post:
-            responses:
-                '200': {}
-            operationId: reset
-            summary: Reset all data.
-            description: Remove all incidents from the database.
-definitions:
-    Incident:
-        description: ''
-        required:
-            - id
-            - lat
-            - lon
-            - numberOfPeople
-            - medicalNeeded
-            - victimName
-            - victimPhoneNumber
-            - reportedTime
-            - version
-            - status
-        type: object
-        properties:
-            lat:
-                description: ''
-                type: string
-            lon:
-                description: ''
-                type: string
-            numberOfPeople:
-                description: ''
-                type: integer
-            medicalNeeded:
-                description: ''
-                type: boolean
-            victimName:
-                description: ''
-                type: string
-            victimPhoneNumber:
-                description: ''
-                type: string
-            id:
-                description: ''
-                type: string
-            reportedTime:
-                format: int64
-                description: ''
-                type: integer
-            version:
-                description: ''
-                type: integer
-            status:
-                description: ''
-                enum:
-                    - REQUESTED
-                    - ASSIGNED
-                    - COMPLETED
-                    - REPORTED
-                    - RESCUED
-                    - PICKEDUP
-                type: string
-    IncidentReportedEvent:
-        description: ''
-        required:
-            - id
-            - lat
-            - lon
-            - numberOfPeople
-            - medicalNeeded
-            - timestamp
-        type: object
-        properties:
-            id:
-                description: ''
-                type: string
-            lat:
-                description: ''
-                type: number
-            lon:
-                description: ''
-                type: number
-            numberOfPeople:
-                description: ''
-                type: integer
-            medicalNeeded:
-                description: ''
-                type: boolean
-            timestamp:
-                format: int64
-                description: ''
-                type: integer
-    UpdateIncidentCommand:
-        description: ''
-        required:
-            - body
-            - id
-            - messageType
-            - invokingService
-            - timestamp
-        type: object
-        properties:
-            id:
-                description: ''
-                type: string
-            messageType:
-                description: ''
-                type: string
-            invokingService:
-                description: ''
-                type: string
-            timestamp:
-                format: int64
-                description: ''
-                type: integer
-            body:
-                $ref: '#/definitions/Incident'
-                description: ''
-    IncidentReportedEventMessage:
-        description: ''
-        required:
-            - id
-            - messageType
-            - invokingService
-            - timestamp
-            - body
-        type: object
-        properties:
-            id:
-                description: ''
-                type: string
-            messageType:
-                description: ''
-                type: string
-            invokingService:
-                description: ''
-                type: string
-            timestamp:
-                format: int64
-                description: ''
-                type: integer
-            body:
-                $ref: '#/definitions/IncidentReportedEvent'
-                description: ''
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Incident",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/incidents": {
+            "get": {
+                "summary": "List All Incidents",
+                "description": "Gets a list of all `Incident` entities.",
+                "operationId": "getIncidents",
+                "responses": {
+                    "200": {
+                        "description": "Get a list of all incidents.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Incident"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a Incident",
+                "description": "Creates a new instance of a `Incident`.",
+                "operationId": "createIncident",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "A new `Incident` to be created.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Incident"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful response."
+                    }
+                }
+            }
+        },
+        "/incidents/incident/{incidentId}": {
+            "get": {
+                "summary": "Path used to manage a single Incident.",
+                "description": "Gets the details of a single instance of a `Incident`.",
+                "operationId": "getIncident",
+                "parameters": [
+                    {
+                        "name": "incidentId",
+                        "in": "path",
+                        "description": "A unique identifier for a `Incident`.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response - returns a single `Incident`.",
+                        "schema": {
+                            "$ref": "#/definitions/Incident"
+                        }
+                    }
+                }
+            }
+        },
+        "/incidents/{status}": {
+            "get": {
+                "summary": "Get an incident by status",
+                "description": "Get all incidents by a status.",
+                "operationId": "getIncidentByStatus",
+                "responses": {
+                    "200": {
+                        "description": "A list of incidents with the given status.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Incident"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/incidents/victim/byname/{name}": {
+            "get": {
+                "summary": "Get incidents by victim name.",
+                "description": "Get all incidents for a victim.",
+                "operationId": "getIncidentsByVictimName",
+                "responses": {
+                    "200": {
+                        "description": "A list of incidents.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Incident"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reset": {
+            "post": {
+                "summary": "Reset all data.",
+                "description": "Remove all incidents from the database.",
+                "operationId": "reset",
+                "responses": {
+                    "200": {}
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Incident": {
+            "description": "",
+            "required": [
+                "id",
+                "lat",
+                "lon",
+                "numberOfPeople",
+                "medicalNeeded",
+                "victimName",
+                "victimPhoneNumber",
+                "reportedTime",
+                "version",
+                "status"
+            ],
+            "type": "object",
+            "properties": {
+                "lat": {
+                    "description": "",
+                    "type": "string"
+                },
+                "lon": {
+                    "description": "",
+                    "type": "string"
+                },
+                "numberOfPeople": {
+                    "description": "",
+                    "type": "integer"
+                },
+                "medicalNeeded": {
+                    "description": "",
+                    "type": "boolean"
+                },
+                "victimName": {
+                    "description": "",
+                    "type": "string"
+                },
+                "victimPhoneNumber": {
+                    "description": "",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "",
+                    "type": "string"
+                },
+                "reportedTime": {
+                    "format": "int64",
+                    "description": "",
+                    "type": "integer"
+                },
+                "version": {
+                    "description": "",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "",
+                    "enum": [
+                        "REQUESTED",
+                        "ASSIGNED",
+                        "COMPLETED",
+                        "REPORTED",
+                        "RESCUED",
+                        "PICKEDUP"
+                    ],
+                    "type": "string"
+                }
+            }
+        },
+        "IncidentReportedEvent": {
+            "description": "",
+            "required": [
+                "id",
+                "lat",
+                "lon",
+                "numberOfPeople",
+                "medicalNeeded",
+                "timestamp"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "",
+                    "type": "string"
+                },
+                "lat": {
+                    "description": "",
+                    "type": "number"
+                },
+                "lon": {
+                    "description": "",
+                    "type": "number"
+                },
+                "numberOfPeople": {
+                    "description": "",
+                    "type": "integer"
+                },
+                "medicalNeeded": {
+                    "description": "",
+                    "type": "boolean"
+                },
+                "timestamp": {
+                    "format": "int64",
+                    "description": "",
+                    "type": "integer"
+                }
+            }
+        },
+        "UpdateIncidentCommand": {
+            "description": "",
+            "required": [
+                "body",
+                "id",
+                "messageType",
+                "invokingService",
+                "timestamp"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "",
+                    "type": "string"
+                },
+                "messageType": {
+                    "description": "",
+                    "type": "string"
+                },
+                "invokingService": {
+                    "description": "",
+                    "type": "string"
+                },
+                "timestamp": {
+                    "format": "int64",
+                    "description": "",
+                    "type": "integer"
+                },
+                "body": {
+                    "$ref": "#/definitions/Incident",
+                    "description": ""
+                }
+            }
+        },
+        "IncidentReportedEventMessage": {
+            "description": "",
+            "required": [
+                "id",
+                "messageType",
+                "invokingService",
+                "timestamp",
+                "body"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "",
+                    "type": "string"
+                },
+                "messageType": {
+                    "description": "",
+                    "type": "string"
+                },
+                "invokingService": {
+                    "description": "",
+                    "type": "string"
+                },
+                "timestamp": {
+                    "format": "int64",
+                    "description": "",
+                    "type": "integer"
+                },
+                "body": {
+                    "$ref": "#/definitions/IncidentReportedEvent",
+                    "description": ""
+                }
+            }
+        }
+    }
+}
