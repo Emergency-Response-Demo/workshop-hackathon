@@ -69,30 +69,30 @@ If you have implemented the health check service endpoints, you can skip directl
 Login to the OpenShift console and click on the project named _emergency-response-demo_. Next from the menu select Applications -> Deployments. Then click on incident-service. OpenShift will make a new deployment of the incident service each time any change is made to the configuration. You really want to avoid that at the moment, since you need to make several changes. 
 
 Therefore as a first action you select _Pause Rollouts_ in the _Actions_ menu.
-![image of pausing rollouts](./resources/pause_rollouts.png)
+![image of pausing rollouts](../assets/pause_rollouts.png)
 
 With that in place, let's make the necessary changes. First you can disable the health checks. Be aware that this will have the effect that the container is listed as ready as soon as your application is spun up. It will only be listed as failing if your application is crashing with a system exit.
 
 Click _Edit Health Checks_ in the _Actions_ menu.
-![image of editing health checks](./resources/edit_health_checks.png)
+![image of editing health checks](../assets/edit_health_checks.png)
 
 In the health checks screen click _Remove Readiness Probe_. While you're at it, also click _Remove Health Probe_. After all ignorance is bliss:-) Click 'Save' to confirm the changes to the configuration.
 
-![image of removing health checks](./resources/remove_readiness_probe.png)
+![image of removing health checks](../assets/remove_readiness_probe.png)
 
 ### Replacing the Incident Service
 Now it's time to replace the incident service. Click _Edit_ in the _Actions_ menu.
-![image of editing the incident service](./resources/edit_incident_service.png)
+![image of editing the incident service](../assets/edit_incident_service.png)
 
 In the screen appearing, scroll to the _Images_ section of the screen and select your image instead of the default implementation. Remember to also select a valid version of your image (probably _latest_ if you didn't change the image build config).
-![image of replacing the incident service image](./resources/replace_image.png)
+![image of replacing the incident service image](../assets/replace_image.png)
 Click _Save_ to confirm your changes.
 
 If you paused the rollouts earlier, now is the time to resume to see the effect of your hard work. To do so click _Resume Rollouts_ in the _Actions_ menu.
-![image of resuming rollouts](./resources/resume_rollouts.png).
+![image of resuming rollouts](../assets/resume_rollouts.png).
 
 ### Monitoring the Incident Service
 Now you can monitor the rollout of the Incident Service. Click on the _Overview_ menu item and see the beauty of OpenShift combined with your code unfold.
-![image of resuming rollouts](./resources/see_application_rollout.png).
+![image of resuming rollouts](../assets/see_application_rollout.png).
 
  Under incident-service you will see your application being deployed. Once the grey ring becomes solid blue, your application is ready for testing; though you might want to inspect the log of the pod if you didn't implement health checks.
