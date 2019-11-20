@@ -1,4 +1,4 @@
-# Workshop Hackathon Material
+# Introduction
 
 What is this about?
 In August 2017, Hurricane Harvey caused massive flooding in Southeast Texas, USA. The storm left a number of residents stranded and in need of rescue. Emergency first responders were overwhelmed with the high volume of rescue calls. A loose-knit group of volunteer boaters assisted in the rescue effort. These volunteers explored neighborhoods seeking out residents who needed assistance. In addition, with the support of social media, a group of volunteers served as dispatchers to relay rescue requests to the volunteer boaters. This group of volunteers became known as the Cajun Navy. The Cajun Navy has been operating in various forms since Hurricane Katrina in 2005.
