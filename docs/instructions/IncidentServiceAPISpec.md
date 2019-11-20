@@ -29,6 +29,8 @@ There are two relevant topics on the Kafka queue, which the incident service mus
 
 In order to connect to the Kafka server, use the following url _kafka-cluster-kafka-bootstrap.emergency-response-demo.svc.cluster.local:9092_
 
+Both the _IncidentReportedEvent_ and _UpdateIncidentCommand_ formats are included as data types in the [OpenAPI specification for the Incident Service](https://raw.githubusercontent.com/Emergency-Response-Demo/incident-service/master/openapi.json).
+
 Example of _IncidentReportedEvent_:
 ```
 {
