@@ -22,4 +22,10 @@ For providing the implementation, you'll need some further information.
 2. [Incident API Specification](IncidentServiceAPISpec.md)
 3. [Incident Deployment Guide](IncidentServiceDeployGuide.md)
 
+That's it. Now you have all the information to get started. We suggest that you discuss in your team, what you want to focus on, and how to get started. Some suggestions for a starting point could be:
+1. Work automating the deployment of one of the existing solutions, maybe adding CI/CD capabilities?
+2. Improve on one of the existing solutions (e.g. add database storage to the [Quarkus solution](https://github.com/Emergency-Response-Demo/workshop-hackathon/tree/master/solutions/quarkus))
+3. Choose a framework and implement a minimal solution of the incident service
+4. Go all in and implement the full service in your favorite framework and integrate it with monitoring now that you're at it.
+
 If you are still in doubt about anything, feel free to reach out to one of the tech leads.
