@@ -22,10 +22,10 @@ The incident service will need some kind of persistence. There are no requiremen
 
 ## Kafka integration
 There are two relevant topics on the Kafka queue, which the incident service must integrate to.
-| Topic name |      Send/Receive      |  Description | Format |
-| --------- |-----------------------|--------------|--------|
-| topic-incident-event |  Send | Notify other microservices that a new incident has been created. | _IncidentReportedEvent_ |
-| topic-incident-command |    Receive   | Get notifications from other microservices when an incident has changed | _UpdateIncidentCommand_ |
+Topic name | Send/Receive | Description | Format
+--- | --- | --- | ---
+topic-incident-event |  Send | Notify other microservices that a new incident has been created. | _IncidentReportedEvent_
+topic-incident-command | Receive | Get notifications from other microservices when an incident has changed | _UpdateIncidentCommand_
 
 In order to connect to the Kafka server, use the following url _kafka-cluster-kafka-bootstrap.emergency-response-demo.svc.cluster.local:9092_
 
