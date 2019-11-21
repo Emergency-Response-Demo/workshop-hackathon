@@ -10,7 +10,10 @@ As you can see in above diagram, the Incident Service consists of different part
 
 Finally the Incident Service implements a health check API to let the cluster know if the service is up and running.
 
-Please refer to the following sections for more details on each topic.
+Please refer to the following sections for more details on each topic. Be aware that this document describes a full implementation of the service. For testing/evaluation purposes, you can create a minimal solution to get the Incident Service working with the other components. Such a solution only needs to include:
+* REST API implementation
+* Kafka Integration
+* Persistence can be replaced by an ephemeral solution (like storing Incidents in a LinkedList)
 
 ## REST API implementation
 The service exposes a rest API as specified in the [OpenAPI specification](https://raw.githubusercontent.com/Emergency-Response-Demo/incident-service/master/openapi.json). The service exposes five paths and any implementation must comply with this interface.
@@ -68,3 +71,6 @@ Example of _UpdateIncidentCommand_:
 
 ## Health service
 A full implementation must provide an endpoint _/actuator/health_, which can tell wether the service is up and running. Only requirement is, that it returns http code 200 if the service is up.
+
+## Monitoring
+Ask the tech lead
