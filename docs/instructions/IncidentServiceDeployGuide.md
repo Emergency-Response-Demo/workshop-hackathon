@@ -47,7 +47,7 @@ In this case, we will use a Java8 s2i image, and the output of the build will be
 
 Now you are ready to build your application, using s2i. From _$WORKING_DIR_, simply run the command
 ```
-oc start-build incident-service-build --from-dir .
+oc start-build incident-service-build --from-file impl/target/incident-service-fuse-impl-1.0.0-SNAPSHOT.jar
 ```
 This will trigger your build. You can investigate how the build is doing by running
 ```
