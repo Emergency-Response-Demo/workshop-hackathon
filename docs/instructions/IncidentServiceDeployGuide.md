@@ -96,3 +96,21 @@ Now you can monitor the rollout of the Incident Service. Click on the _Overview_
 ![image of resuming rollouts](../assets/see_application_rollout.png).
 
  Under incident-service you will see your application being deployed. Once the grey ring becomes solid blue, your application is ready for testing; though you might want to inspect the log of the pod if you didn't implement health checks.
+
+ ## Handling configuration
+ The incident service comes configured already. All configurations come in a config map named incident-service. You can see the content of the file by invoking the command
+ ```
+oc get cm incident-service -o yaml
+```
+which will show you the configuration of the service.
+
+Depending on the need of your application, you can either inject this config map as a file or as system properties. Refer to [the documentation on configmaps](https://access.redhat.com/documentation/en-us/openshift_container_platform/3.11/html/developer_guide/dev-guide-configmaps) for more details.
+
+If you want to edit the deployment config by hand, you can use
+```
+oc edit dc incident-service
+```
+to do so. Better take a backup of your config before changing it
+```
+oc get dc incident-service -o yaml > incident-service.yaml
+```
