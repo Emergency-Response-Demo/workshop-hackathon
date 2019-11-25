@@ -1,31 +1,35 @@
-# Workshop instructions
+# Introduction
 
-Congratulations! You are a new hire on the Emergency Response Team. We are working on a revolutionary approach on how to respond to an emergency at a big scale.
+What is this about?
+In August 2017, Hurricane Harvey caused massive flooding in Southeast Texas, USA. The storm left a number of residents stranded and in need of rescue. Emergency first responders were overwhelmed with the high volume of rescue calls. A loose-knit group of volunteer boaters assisted in the rescue effort. These volunteers explored neighborhoods seeking out residents who needed assistance. In addition, with the support of social media, a group of volunteers served as dispatchers to relay rescue requests to the volunteer boaters. This group of volunteers became known as the Cajun Navy. The Cajun Navy has been operating in various forms since Hurricane Katrina in 2005.
 
-Before you start working on the actual code we suggest that you take a look at our homepage https://www.erdemo.io/, where you will get some more information about, what we are working on. We also hope you enjoyed our introduction on the topic:-)
+Our team was tasked to ensure there is a solution that will help to organize this effort, so responders are dispatched to the right locations and to the right victims, that match with, location, medical needs etc. All to ensure organization and optimization of this effort.
 
-Okay, are you ready for your first challenge? If yes, read on.
+Our team started working on this solution and came up with an architecture flow as follows.
 
-As you saw in our [architectural diagram](https://www.erdemo.io/architecture/) we are working on a lot of microservices. As part of our continued improvement, we want to try out new technologies in order to investigate whether we can improve our code in terms of readability, performance, modularity and so on. To not blow up the whole thing, we've decided to try and change one of the microservices and see how it affects the solution. We have decided the following process for evaluating new technology.
-* We setup several teams to work on the same problem.
-* Each team will provide an implementation of the Incident Service
-* At the end of the implementation phase, there will be a presentation, where each team will present their solution.
-* There are no specific evaluation criteria. Each team can focus on, what they find is important. Suggestions for criteria could be:
-  * Performance
-  * Readability
-  * Testability
-  * Improved memory/CPU footprint
-* After the presentation, we'll discuss the solutions and move on from there.
+![Overview](assets/overviewERDemo.png)
 
-For providing the implementation, you'll need some further information.
-1. [Getting Started Guide](docs/GettingStarted.md)
-2. [Incident API Specification](docs/instructions/IncidentServiceAPISpec.md)
-3. [Incident Deployment Guide](docs/instructions/IncidentServiceDeployGuide.md)
+- Incidents come in via a REST API. [Incident API Specification](../instructions/IncidentServiceAPISpec.md)
+- Incidents are then sent to a Process Service that takes decisions on what which responder to dispatch to which incident.
+- Once the process service decides it send a Command to the Mission Service; and the mission service fetches data from Mapbox API and creates a new mission with all details, routes. and sends a new event called MissionCreated.
+- Responders simulator listens to this and gets all details and starts to simulate the movements of the responder. The responder simulator sends the update events timely and once completed send an event saying the responders has not further action.
+- Mission service then terminates that mission and send a new Command called Mission Completed, to this the process service takes to task and makes all necessary completions to the process.
 
-That's it. Now you have all the information to get started. We suggest that you discuss in your team, what you want to focus on, and how to get started. Some suggestions for a starting point could be:
-1. Work automating the deployment of one of the existing solutions, maybe adding CI/CD capabilities?
-2. Improve on one of the existing solutions (e.g. add database storage to the [Quarkus solution](https://github.com/Emergency-Response-Demo/workshop-hackathon/tree/master/solutions/quarkus))
-3. Choose a framework and implement a minimal solution of the incident service
-4. Go all in and implement the full service in your favorite framework and integrate it with monitoring now that you're at it.
+Following is how the Overall flow looks like, a screen shot from our Process Viewer service.
 
-If you are still in doubt about anything, feel free to reach out to one of the tech leads.
+![Process View](assets/incident-process-instance.png)
+
+
+
+Some basic architectural rules
+- All backend uses Kafka/AMQStreams to talk to each other.
+- All front-end, i.e. for outside of the system makes call directly via REST.
+- One exception to the above is, the emergency console that pulls on REST for the first time it loads to get the state of the system, and every new event is then consumed from Kafka. (While there could be better approaches to do this, at this time this is how it looks, feel free to make a PR/Issue in case of better ideas.)
+- All services implement an end-point called /metrics which is then picked up via Prometheus and shown on the the Grafana dashboard.
+
+
+
+
+
+You are now the new upcoming stars of our team, following is your secret mission to improve our solution.
+* [Instructions for participants](instructions/README.md)
