@@ -32,4 +32,4 @@ Some basic architectural rules
 
 
 You are now the new upcoming stars of our team, following is your secret mission to improve our solution.
-* [Instructions for participants](instructions/README.md)
+* [Instructions for participants](docs/instructions/README.md)
