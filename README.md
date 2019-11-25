@@ -7,7 +7,7 @@ Our team was tasked to ensure there is a solution that will help to organize thi
 
 Our team started working on this solution and came up with an architecture flow as follows.
 
-![Overview](assets/overviewERDemo.png)
+![Overview](docs/assets/overviewERDemo.png)
 
 - Incidents come in via a REST API. [Incident API Specification](../instructions/IncidentServiceAPISpec.md)
 - Incidents are then sent to a Process Service that takes decisions on what which responder to dispatch to which incident.
@@ -17,7 +17,7 @@ Our team started working on this solution and came up with an architecture flow 
 
 Following is how the Overall flow looks like, a screen shot from our Process Viewer service.
 
-![Process View](assets/incident-process-instance.png)
+![Process View](docs/assets/incident-process-instance.png)
 
 
 
