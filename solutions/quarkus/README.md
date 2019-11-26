@@ -85,4 +85,33 @@ oc new-app --image-stream=incident-service:latest
 oc expose svc/incident-service
 
  ```
+ 
+ Deploy uber jar
+ ```
+echo 'apiVersion: v1
+kind: ImageStream
+metadata:
+  labels:
+    application: incident-service-<initials>
+  name: incident-service-<initials>'|oc create -f -
+
+echo 'kind: "BuildConfig"
+apiVersion: "v1"
+metadata:
+  name: "incident-service-build-<initials>"
+spec:
+  runPolicy: "Serial" 
+  strategy: 
+    sourceStrategy:
+      from:
+        kind: "ImageStreamTag"
+        name: "java:8"
+        namespace: openshift
+  output: 
+    to:
+      kind: "ImageStreamTag"
+      name: "incident-service-<initials>:latest"'| oc create -f -
+
+oc start-build incident-service-build-<initials> --from-file impl/target/incident-service-1.0.0-SNAPSHOT-runner.jar
+```
 
