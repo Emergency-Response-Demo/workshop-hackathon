@@ -114,6 +114,6 @@ spec:
 
 mvn clean package -DuberJar -Dmaven.test.skip=true
 
-oc start-build incident-service-build-<initials> --from-file impl/target/incident-service-1.0.0-SNAPSHOT-runner.jar
+oc start-build incident-service-build-<initials> --from-file target/incident-service-1.0.0-SNAPSHOT-runner.jar
 ```
 
