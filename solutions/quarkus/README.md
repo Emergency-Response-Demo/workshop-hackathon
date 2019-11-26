@@ -57,10 +57,10 @@ bin/zookeeper-server-start.sh config/zookeeper.properties
 bin/kafka-server-start.sh config/server.properties
 
 # Creating the topic
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic orders
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic-incident-event
 
 # Listening to the topic on the console
-bin/kafka-console-consumer.sh --topic topic-incident-event --from-begining
+bin/kafka-console-consumer.sh --topic topic-incident-event --bootstrap-server localhost:2181 --from-beginning
 
 
    ```
