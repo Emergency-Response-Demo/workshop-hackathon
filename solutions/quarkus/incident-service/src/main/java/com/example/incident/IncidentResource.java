@@ -105,7 +105,6 @@ public class IncidentResource {
     }
 
 
-
     private void sendIncidentEvent(Incident incident) {
         Message<IncidentReportedEvent> message = new com.example.incident.message.Message.Builder<>("IncidentReportedEvent", "IncidentService",
                 new IncidentReportedEvent.Builder(incident.getId())
@@ -116,7 +115,7 @@ public class IncidentResource {
                         .timestamp(incident.getTimestamp())
                         .build())
                 .build();
-        emitter.send(KafkaMessage.of(incident.getId(), message.toString());
+        emitter.send(KafkaMessage.of(incident.getId(), message.toString()));
         logger.info("Sent message: " + message);
     }
 
