@@ -1,8 +1,16 @@
 package com.example.incident.model;
 
+import io.quarkus.mongodb.panache.MongoEntity;
+import io.quarkus.mongodb.panache.PanacheMongoEntity;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
+import java.time.LocalDate;
+import java.util.List;
+
 import java.util.UUID;
 
-public class Incident {
+@MongoEntity(collection="TheIncident")
+public class Incident extends PanacheMongoEntity {
 
     private String id;
 
@@ -100,7 +108,5 @@ public class Incident {
     public void setStatus(String status) {
         this.status = status;
     }
-
-
 
 }

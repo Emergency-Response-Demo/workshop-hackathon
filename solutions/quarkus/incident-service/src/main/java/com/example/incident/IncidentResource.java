@@ -1,5 +1,6 @@
 package com.example.incident;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -26,8 +27,11 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.quarkus.runtime.StartupEvent;
-
 import com.example.incident.model.Incident;
+
+import io.smallrye.reactive.messaging.annotations.Channel;
+import io.smallrye.reactive.messaging.annotations.Emitter;
+import io.smallrye.reactive.messaging.kafka.KafkaMessage;
 
 
 @Path("/incidents")
@@ -37,27 +41,15 @@ public class IncidentResource {
 
     private final Logger logger = LoggerFactory.getLogger(IncidentResource.class.getName());
 
-    @ConfigProperty(name = "mp.messaging.outgoing.incidentEvent.bootstrap.servers")
-    public String bootstrapServers;
-
-    @ConfigProperty(name = "mp.messaging.outgoing.incidentEvent.topic")
-    public String incidentEvent;
-
-    @ConfigProperty(name = "mp.messaging.outgoing.incidentEvent.value.serializer")
-    public String incidentEventTopicValueSerializer;
-
-    @ConfigProperty(name = "mp.messaging.outgoing.incidentEvent.key.serializer")
-    public String incidentEventTopicKeySerializer;
-
-    private Producer<String, String> producer;
-
+    @Inject @Channel("incidentEvent")
+    public Emitter<KafkaMessage> emitter;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("")
     @Operation(summary = "get all")
     public String getIncidents() {
-        return Json.encodePrettily(incidents.values());
+        return Json.encodePrettily(Incident.listAll());
     }
 
     @GET
@@ -65,21 +57,16 @@ public class IncidentResource {
     @Path("/{status}")
     @Operation(summary = "get by status")
     public String getStatus(@PathParam("status") String status) {
-        Optional<String> optional = incidents.entrySet().stream()
-                .filter(e -> e.getValue().getStatus().equalsIgnoreCase(status))
-                .map(Map.Entry::getKey)
-                .findAny();
-        return Json.encodePrettily(optional);
+        return Json.encodePrettily(Incident.list("status",status));
     }
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/incident/{id}")
     @Operation(summary = "get by Id")
     public String getIncidentById(@PathParam("id") String id) {
-        if(incidents.containsKey(id))
-            return Json.encodePrettily(incidents.get(id));
-        else return Json.encode("");
+        return Json.encodePrettily(Incident.find("_id",id).firstResult());
     }
 
     @GET
@@ -87,13 +74,7 @@ public class IncidentResource {
     @Path("/victim/byname/{name}")
     @Operation(summary = "get victim by name")
     public String getIncidentByVictimName(@PathParam("name") String name) {
-
-        Optional<String> optional = incidents.entrySet().stream()
-                .filter(e -> e.getValue().getVictimName().matches("*"+name+"*"))
-                .map(Map.Entry::getKey)
-                .findAny();
-
-        return Json.encodePrettily(optional);
+        return Json.encodePrettily(Incident.list("victimName",name));
     }
 
     @POST
@@ -103,7 +84,7 @@ public class IncidentResource {
     @Operation(summary = "Add a new Incident")
     public Incident add(Incident incident) throws Exception {
         logger.info(incident.toString());
-        incidents.put(incident.getId(), incident);
+        incident.persist();
         sendIncidentEvent(incident);
         return incident;
     }
@@ -113,10 +94,8 @@ public class IncidentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "reset the incidents")
     public void reset() throws Exception {
-        incidents = new LinkedHashMap<>();
+        Incident.deleteAll();
     }
-
-
 
     private void sendIncidentEvent(Incident incident) {
         Message<IncidentReportedEvent> message = new com.example.incident.message.Message.Builder<>("IncidentReportedEvent", "IncidentService",
@@ -128,13 +107,9 @@ public class IncidentResource {
                         .timestamp(incident.getTimestamp())
                         .build())
                 .build();
-                System.out.println("----------------------- producer --------------------");
-                System.out.println(producer);
-                producer = getProducer();
-        producer.send(new ProducerRecord<String, String>(incidentEvent, incident.getId(), message.toString()));
+        emitter.send(KafkaMessage.of(incident.getId(), message.toString()));
         logger.info("Sent message: " + message);
     }
-
 
     @Incoming("topic-incident-command")
     public CompletionStage<Void> onMessage(KafkaMessage<String, String> message)
@@ -146,18 +121,5 @@ public class IncidentResource {
 
         return message.ack();
     }
-
-    public KafkaProducer<String, String> getProducer() {
-        if(producer == null) {
-            Properties props = new Properties();
-            props.put("bootstrap.servers", bootstrapServers);
-            props.put("value.serializer", incidentEventTopicValueSerializer);
-            props.put("key.serializer", incidentEventTopicKeySerializer);
-            producer = new KafkaProducer<String, String>(props);
-        }
-        return (KafkaProducer<String, String>) producer;
-    }
-
-
 
 }
