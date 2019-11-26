@@ -18,6 +18,18 @@ Please refer to the following sections for more details on each topic. Be aware 
 ## REST API implementation
 The service exposes a rest API as specified in the [OpenAPI specification](https://raw.githubusercontent.com/Emergency-Response-Demo/incident-service/master/openapi.json). The service exposes five paths and any implementation must comply with this interface.
 
+Example of an incident json
+```
+{
+	"lat": "34.25184", 
+	"lon": "-77.89708", 
+	"numberOfPeople": 9, 
+	"victimName": "Mr Test", 
+	"victimPhoneNumber": "(651) 555-9526", 
+	"medicalNeeded": true
+}
+```
+
 ## Persistence
 The incident service will need some kind of persistence. There are no requirements on specific storage solutions, but keep in mind that the Incident service is a microservice, so any implementation needs to be able to be restarted - possibly in another node in the cluster.
 * All incidents received must be persisted and returned on later calls.
