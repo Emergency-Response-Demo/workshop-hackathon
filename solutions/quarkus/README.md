@@ -138,3 +138,23 @@ echo $URL
 curl -w "\n" $URL/incidents
 
 ```
+
+=== Deploying S2I in a minimal image
+
+```
+
+oc new-build --name=minimal-incident-service-native \
+    --docker-image=registry.access.redhat.com/ubi7-dev-preview/ubi-minimal \
+    --source-image=incident-service-native \
+    --source-image-path='/home/quarkus/application:.' \
+    --dockerfile=$'FROM registry.access.redhat.com/ubi7-dev-preview/ubi-minimal:latest\nCOPY application /application\nCMD /application\nEXPOSE 8080'
+
+oc new-app minimal-incident-service-native
+oc expose svc/minimal-incident-service-native
+
+# Get the route URL
+export URL="http://$(oc get route | grep minimal-incident-service-native | awk '{print $2}')"
+echo $URL
+curl -w "\n" $URL/incidents
+
+```
