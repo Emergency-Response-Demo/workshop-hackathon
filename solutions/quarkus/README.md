@@ -83,3 +83,24 @@ oc expose svc/incident-service
 
  ```
 
+ == Building to Native in OpenShift with S2I:
+Inspired by <https://quarkus.io/guides/deploying-to-openshift-s2i>
+
+```
+
+ # To build the image on OpenShift
+oc new-app quay.io/quarkus/ubi-quarkus-native-s2i:19.2.1~https://github.com/josequaresma/workshop-hackathon.git --context-dir=solutions/quarkus/incident-service --name=incident-service-native
+
+# Build from command above will fail due to lack of memory, so we extend that and re-run the build
+oc patch bc/incident-service-native -p '{"spec":{"resources":{"limits":{"cpu":"4", "memory":"6Gi"}}}}'
+oc start-build incident-service-native --follow
+
+# To create the route
+oc expose svc/incident-service-native
+
+# Get the route URL
+export URL="http://$(oc get route | grep incident-service-native | awk '{print $2}')"
+echo $URL
+curl $URL/hello/greeting/quarkus
+
+```
