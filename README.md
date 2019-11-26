@@ -9,7 +9,7 @@ Our team started working on this solution and came up with an architecture flow 
 
 ![Overview](docs/assets/overviewERDemo.png)
 
-- Incidents come in via a REST API. [Incident API Specification](../instructions/IncidentServiceAPISpec.md)
+- Incidents come in via a REST API. [Incident API Specification](docs/instructions/IncidentServiceAPISpec.md)
 - Incidents are then sent to a Process Service that takes decisions on what which responder to dispatch to which incident.
 - Once the process service decides it send a Command to the Mission Service; and the mission service fetches data from Mapbox API and creates a new mission with all details, routes. and sends a new event called MissionCreated.
 - Responders simulator listens to this and gets all details and starts to simulate the movements of the responder. The responder simulator sends the update events timely and once completed send an event saying the responders has not further action.
