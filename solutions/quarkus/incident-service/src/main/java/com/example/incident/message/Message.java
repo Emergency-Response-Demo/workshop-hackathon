@@ -67,6 +67,7 @@ public class Message<T> {
 
     @Override
     public String toString() {
+
         return Json.encode(this);
     }
 
