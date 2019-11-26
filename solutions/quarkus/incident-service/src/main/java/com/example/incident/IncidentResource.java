@@ -37,6 +37,7 @@ public class IncidentResource {
 
     private final Logger logger = LoggerFactory.getLogger(IncidentResource.class.getName());
 
+    /*
     @ConfigProperty(name = "mp.messaging.outgoing.incidentEvent.bootstrap.servers")
     public String bootstrapServers;
 
@@ -50,7 +51,7 @@ public class IncidentResource {
     public String incidentEventTopicKeySerializer;
 
     private Producer<String, String> producer;
-
+*/
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -104,7 +105,7 @@ public class IncidentResource {
     public Incident add(Incident incident) throws Exception {
         logger.info(incident.toString());
         incidents.put(incident.getId(), incident);
-        sendIncidentEvent(incident);
+        //sendIncidentEvent(incident);
         return incident;
     }
 
@@ -117,7 +118,7 @@ public class IncidentResource {
     }
 
 
-
+/*
     private void sendIncidentEvent(Incident incident) {
         Message<IncidentReportedEvent> message = new com.example.incident.message.Message.Builder<>("IncidentReportedEvent", "IncidentService",
                 new IncidentReportedEvent.Builder(incident.getId())
@@ -128,10 +129,9 @@ public class IncidentResource {
                         .timestamp(incident.getTimestamp())
                         .build())
                 .build();
-        producer.send(new ProducerRecord<String, String>(incidentEvent, incident.getId(), message.toString()));
+        //producer.send(new ProducerRecord<String, String>(incidentEvent, incident.getId(), message.toString()));
         logger.info("Sent message: " + message);
     }
-
 
     @Incoming("topic-incident-command")
     public CompletionStage<Void> onMessage(KafkaMessage<String, String> message)
@@ -152,6 +152,6 @@ public class IncidentResource {
         producer = new KafkaProducer<String, String>(props);
     }
 
-
+*/
 
 }
