@@ -72,7 +72,10 @@ Finally run the following on localmachine while connected to openshift.
 ```
 
 ./mvnw package -Pnative
-./mvnw package -Pnative -Dnative-image.docker-build=true
+./mvnw package -Pnative -Dquarkus.native.container-build=true
+OR
+./mvnw package -Pnative -Dquarkus.native.container-runtme=Docker
+
 docker build -f src/main/docker/Dockerfile.native -t incident-service .
 
 oc new-build --binary --name=incident-service -l app=incident-service
