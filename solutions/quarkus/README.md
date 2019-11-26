@@ -112,6 +112,8 @@ spec:
       kind: "ImageStreamTag"
       name: "incident-service-<initials>:latest"'| oc create -f -
 
+mvn clean package -DuberJar -Dmaven.test.skip=true
+
 oc start-build incident-service-build-<initials> --from-file impl/target/incident-service-1.0.0-SNAPSHOT-runner.jar
 ```
 
