@@ -74,7 +74,7 @@ Finally run the following on localmachine while connected to openshift.
 ./mvnw package -Pnative
 ./mvnw package -Pnative -Dquarkus.native.container-build=true
 OR
-./mvnw package -Pnative -Dquarkus.native.container-runtme=Docker
+./mvnw package -Pnative -Dquarkus.native.container-runtime=Docker
 
 docker build -f src/main/docker/Dockerfile.native -t incident-service .
 
