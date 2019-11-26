@@ -128,6 +128,9 @@ public class IncidentResource {
                         .timestamp(incident.getTimestamp())
                         .build())
                 .build();
+                System.out.println("----------------------- producer --------------------");
+                System.out.println(producer);
+                producer = getProducer();
         producer.send(new ProducerRecord<String, String>(incidentEvent, incident.getId(), message.toString()));
         logger.info("Sent message: " + message);
     }
@@ -144,12 +147,15 @@ public class IncidentResource {
         return message.ack();
     }
 
-    public void init(@Observes StartupEvent ev) {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", bootstrapServers);
-        props.put("value.serializer", incidentEventTopicValueSerializer);
-        props.put("key.serializer", incidentEventTopicKeySerializer);
-        producer = new KafkaProducer<String, String>(props);
+    public KafkaProducer<String, String> getProducer() {
+        if(producer == null) {
+            Properties props = new Properties();
+            props.put("bootstrap.servers", bootstrapServers);
+            props.put("value.serializer", incidentEventTopicValueSerializer);
+            props.put("key.serializer", incidentEventTopicKeySerializer);
+            producer = new KafkaProducer<String, String>(props);
+        }
+        return (KafkaProducer<String, String>) producer;
     }
 
 
