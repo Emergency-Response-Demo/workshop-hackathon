@@ -1,5 +1,6 @@
 package com.example.incident;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -10,22 +11,20 @@ import java.util.concurrent.CompletionStage;
 import com.example.incident.message.IncidentReportedEvent;
 import com.example.incident.message.Message;
 import com.example.incident.message.UpdateIncidentCommand;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.smallrye.reactive.messaging.annotations.Channel;
+import io.smallrye.reactive.messaging.annotations.Emitter;
 import io.smallrye.reactive.messaging.kafka.KafkaMessage;
 import io.vertx.core.json.Json;
-import io.vertx.core.json.JsonObject;
+
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.event.Observes;
-
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-import io.quarkus.runtime.StartupEvent;
 
 import com.example.incident.model.Incident;
 
@@ -37,20 +36,9 @@ public class IncidentResource {
 
     private final Logger logger = LoggerFactory.getLogger(IncidentResource.class.getName());
 
-    @ConfigProperty(name = "mp.messaging.outgoing.incidentEvent.bootstrap.servers")
-    public String bootstrapServers;
-
-    @ConfigProperty(name = "mp.messaging.outgoing.incidentEvent.topic")
-    public String incidentEvent;
-
-    @ConfigProperty(name = "mp.messaging.outgoing.incidentEvent.value.serializer")
-    public String incidentEventTopicValueSerializer;
-
-    @ConfigProperty(name = "mp.messaging.outgoing.incidentEvent.key.serializer")
-    public String incidentEventTopicKeySerializer;
-
-    private Producer<String, String> producer;
-
+    @Inject
+    @Channel("incident")
+    Emitter<KafkaMessage> emitter;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -128,10 +116,7 @@ public class IncidentResource {
                         .timestamp(incident.getTimestamp())
                         .build())
                 .build();
-                System.out.println("----------------------- producer --------------------");
-                System.out.println(producer);
-                producer = getProducer();
-        producer.send(new ProducerRecord<String, String>(incidentEvent, incident.getId(), message.toString()));
+        emitter.send(KafkaMessage.of(incident.getId(), message.toString());
         logger.info("Sent message: " + message);
     }
 
@@ -141,23 +126,12 @@ public class IncidentResource {
             throws IOException {
 
         logger.info("Kafka topic-incident-command message with value = {} arrived", message.getPayload());
-        Incident i = Json.decodeValue(String.valueOf(message.getPayload()), UpdateIncidentCommand.class).getIncident();
+        Message<UpdateIncidentCommand> msg = new ObjectMapper().readValue(message.getPayload(), new TypeReference<Message<UpdateIncidentCommand>>() {});
+        Incident i = msg.getBody().getIncident();
         incidents.replace(i.getId(),i);
 
         return message.ack();
     }
-
-    public KafkaProducer<String, String> getProducer() {
-        if(producer == null) {
-            Properties props = new Properties();
-            props.put("bootstrap.servers", bootstrapServers);
-            props.put("value.serializer", incidentEventTopicValueSerializer);
-            props.put("key.serializer", incidentEventTopicKeySerializer);
-            producer = new KafkaProducer<String, String>(props);
-        }
-        return (KafkaProducer<String, String>) producer;
-    }
-
 
 
 }
