@@ -122,6 +122,4 @@ public class IncidentResource {
         return message.ack();
     }
 
-
-
 }

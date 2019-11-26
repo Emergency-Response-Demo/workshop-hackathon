@@ -57,10 +57,10 @@ bin/zookeeper-server-start.sh config/zookeeper.properties
 bin/kafka-server-start.sh config/server.properties
 
 # Creating the topic
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic orders
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic-incident-event
 
 # Listening to the topic on the console
-bin/kafka-console-consumer.sh --topic topic-incident-event --from-begining
+bin/kafka-console-consumer.sh --topic topic-incident-event --bootstrap-server localhost:2181 --from-beginning
 
 
    ```
@@ -72,7 +72,10 @@ Finally run the following on localmachine while connected to openshift.
 ```
 
 ./mvnw package -Pnative
-./mvnw package -Pnative -Dnative-image.docker-build=true
+./mvnw package -Pnative -Dquarkus.native.container-build=true
+OR
+./mvnw package -Pnative -Dquarkus.native.container-runtime=Docker
+
 docker build -f src/main/docker/Dockerfile.native -t incident-service .
 
 oc new-build --binary --name=incident-service -l app=incident-service
@@ -82,4 +85,35 @@ oc new-app --image-stream=incident-service:latest
 oc expose svc/incident-service
 
  ```
+ 
+ Deploy uber jar
+ ```
+echo 'apiVersion: v1
+kind: ImageStream
+metadata:
+  labels:
+    application: incident-service-<initials>
+  name: incident-service-<initials>'|oc create -f -
+
+echo 'kind: "BuildConfig"
+apiVersion: "v1"
+metadata:
+  name: "incident-service-build-<initials>"
+spec:
+  runPolicy: "Serial" 
+  strategy: 
+    sourceStrategy:
+      from:
+        kind: "ImageStreamTag"
+        name: "java:8"
+        namespace: openshift
+  output: 
+    to:
+      kind: "ImageStreamTag"
+      name: "incident-service-<initials>:latest"'| oc create -f -
+
+mvn clean package -DuberJar -Dmaven.test.skip=true
+
+oc start-build incident-service-build-<initials> --from-file target/incident-service-1.0.0-SNAPSHOT-runner.jar
+```
 
