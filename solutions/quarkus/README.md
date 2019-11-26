@@ -135,6 +135,6 @@ oc expose svc/incident-service-native
 # Get the route URL
 export URL="http://$(oc get route | grep incident-service-native | awk '{print $2}')"
 echo $URL
-curl $URL/hello/greeting/quarkus
+curl -w "\n" $URL/incidents
 
 ```
