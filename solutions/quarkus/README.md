@@ -1,7 +1,7 @@
 Incident Service
 =========
 
-This is the quarkus version for the incident service. 
+This is the Quarkus version for the incident service.
 It uses openapi and rest and Kafka extensions
 
 To test out:
@@ -66,7 +66,7 @@ bin/kafka-console-consumer.sh --topic topic-incident-event --bootstrap-server lo
    ```
 
 
-== Running on Openshift:
+== Running on OpenShift:
 Finally run the following on localmachine while connected to openshift.
 
 ```

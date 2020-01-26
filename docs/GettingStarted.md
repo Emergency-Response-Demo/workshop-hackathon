@@ -3,9 +3,9 @@ Getting Started
 Following is a checklist, make sure you have everything verified and ready to start developing. Good luck!
 
 
-Verify your cluster and environment by login into Openshift
+Verify your cluster and environment by login into OpenShift
 ====
-`Console URL` - is the address of the Openshift console, where you can see all your projects and file.
+`Console URL` - is the address of the OpenShift console, where you can see all your projects and file.
 
 `Emergency Console` - is the Emergency response solutions main dashboard.
 
@@ -15,13 +15,13 @@ Enough about the consoles. You should by now know which team you belong to, and 
 
 Login via the web console by hitting the URL and credentials provided to you.
 Make sure you have successfully logged in.
-If you do not have the Openshift CLI installed on your machine. You can download it from the web console itself. Click on the following link as shown in the picture to download the `oc` command line utility for your machine.
+If you do not have the OpenShift CLI installed on your machine. You can download it from the web console itself. Click on the following link as shown in the picture to download the `oc` command line utility for your machine.
 
 ![Download oc client tool](assets/downloadOC.png)
 
 Once you have setup the oc client binary, make sure its in your PATH.
 
-You can then login to Openshift with the following commands
+You can then login to OpenShift with the following commands
 ```
 $ oc login -u $USERNAME $URL
 ```

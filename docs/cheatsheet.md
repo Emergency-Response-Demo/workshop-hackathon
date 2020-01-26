@@ -1,4 +1,4 @@
-Deploying to Openshift
+Deploying to OpenShift
 ====
 
 Source to Image (s2i)
