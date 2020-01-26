@@ -4,6 +4,14 @@ Deploying to Openshift
 Source to Image (s2i)
 ====
 
+Example build:
+
+```bash
+oc new-build java:8~https://github.com/tfriman/workshop-hackathon --context-dir=solutions/vertx/incident-service --name=vertx-incident-service --labels=app=vertx-incident-service
+```
+
+Easiest is to run this on `emergency-response-demo` project/namespace and then tweak the incident service deployment config to use 'vertx-incident-service:latest' as input image stream.
+
 Build pipelines
 ====
 Example build pipeline build config, that will take source from git and push the changes to main `emergency-response-demo` project/namespace

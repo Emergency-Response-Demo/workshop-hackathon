@@ -66,27 +66,33 @@ If you want to know more about build strategies, please refer to the section [Bu
 ## Replacing the Incident Service Image with your implementation
 If you have implemented the health check service endpoints, you can skip directly to [Replacing the Incident Service](#replacing-the-incident-service). Otherwise read on
 ### Removing health checks
-Login to the OpenShift console and click on the project named _emergency-response-demo_. Next from the menu select Applications -> Deployments. Then click on incident-service. OpenShift will make a new deployment of the incident service each time any change is made to the configuration. You really want to avoid that at the moment, since you need to make several changes. 
+Login to the OpenShift console, select projects and click on the project named _emergency-response-demo_. Next from the menu on the left select Workloads -> DeploymentConfigs. Then click on incident-service. OpenShift will make a new deployment of the incident service each time any change is made to the configuration. You really want to avoid that at the moment, since you need to make several changes.
 
 Therefore as a first action you select _Pause Rollouts_ in the _Actions_ menu.
 ![image of pausing rollouts](../assets/pause_rollouts.png)
 
 With that in place, let's make the necessary changes. First you can disable the health checks. Be aware that this will have the effect that the container is listed as ready as soon as your application is spun up. It will only be listed as failing if your application is crashing with a system exit.
 
-Click _Edit Health Checks_ in the _Actions_ menu.
+Click _Edit Deployment Config_ in the _Actions_ menu.
 ![image of editing health checks](../assets/edit_health_checks.png)
 
-In the health checks screen click _Remove Readiness Probe_. While you're at it, also click _Remove Health Probe_. After all ignorance is bliss:-) Click 'Save' to confirm the changes to the configuration.
+In the YAML editor find elements readinessProbe and livenessProbe and remove them. Ignorance is a bliss ;) 'Save' to confirm the changes to the configuration and then 'Reload' to see your changes.
 
 ![image of removing health checks](../assets/remove_readiness_probe.png)
 
 ### Replacing the Incident Service
-Now it's time to replace the incident service. Click _Edit_ in the _Actions_ menu.
-![image of editing the incident service](../assets/edit_incident_service.png)
+Now it's time to replace the incident service implementation.
 
-In the screen appearing, scroll to the _Images_ section of the screen and select your image instead of the default implementation. Remember to also select a valid version of your image (probably _latest_ if you didn't change the image build config).
-![image of replacing the incident service image](../assets/replace_image.png)
-Click _Save_ to confirm your changes.
+Find out the image stream definition, is can be something like this:
+
+```
+		from:
+		  kind: ImageStreamTag
+		  namespace: emergency-response-demo
+		  name: 'incident-service:1.0.0.Final'
+```
+
+Replace 'incident-service:1.0.0.Final' with your 'image-stream-name:latest' and click _Save_ to confirm your changes.
 
 If you paused the rollouts earlier, now is the time to resume to see the effect of your hard work. To do so click _Resume Rollouts_ in the _Actions_ menu.
 ![image of resuming rollouts](../assets/resume_rollouts.png).

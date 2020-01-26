@@ -10,25 +10,22 @@ Our team started working on this solution and came up with an architecture flow 
 ![Overview](docs/assets/overviewERDemo.png)
 
 - Incidents come in via a REST API. [Incident API Specification](docs/instructions/IncidentServiceAPISpec.md)
-- Incidents are then sent to a Process Service that takes decisions on what which responder to dispatch to which incident.
-- Once the process service decides it send a Command to the Mission Service; and the mission service fetches data from Mapbox API and creates a new mission with all details, routes. and sends a new event called MissionCreated.
-- Responders simulator listens to this and gets all details and starts to simulate the movements of the responder. The responder simulator sends the update events timely and once completed send an event saying the responders has not further action.
-- Mission service then terminates that mission and send a new Command called Mission Completed, to this the process service takes to task and makes all necessary completions to the process.
+- Incidents are then sent to a Process Service that takes decisions on which responder to dispatch to which incident.
+- Once the process service get a decision it sends a Command to the Mission Service; and the mission service fetches data from Mapbox API and creates a new mission with all details, routes. and sends a new event called MissionCreated to Kafka.
+- Responders simulator listens to this and gets all details and starts to simulate the movements of the responder. The responder simulator sends the update events timely and once completed send an event saying the responders has not further actions.
+- Mission service then terminates that mission and sends a new Command called Mission Completed, to this the process service takes to task and makes all necessary completions to the process.
 
-Following is how the Overall flow looks like, a screen shot from our Process Viewer service.
+Following is how the overall flow looks like, a screen shot from our Process Viewer service.
 
 ![Process View](docs/assets/incident-process-instance.png)
 
 
 
 Some basic architectural rules
-- All backend uses Kafka/AMQStreams to talk to each other.
+- All backend uses Kafka/AMQ Streams to talk to each other.
 - All front-end, i.e. for outside of the system makes call directly via REST.
 - One exception to the above is, the emergency console that pulls on REST for the first time it loads to get the state of the system, and every new event is then consumed from Kafka. (While there could be better approaches to do this, at this time this is how it looks, feel free to make a PR/Issue in case of better ideas.)
-- All services implement an end-point called /metrics which is then picked up via Prometheus and shown on the the Grafana dashboard.
-
-
-
+- All services implement an end-point called /metrics which is then picked up via Prometheus and shown on the Grafana dashboard.
 
 
 You are now the new upcoming stars of our team, following is your secret mission to improve our solution.
