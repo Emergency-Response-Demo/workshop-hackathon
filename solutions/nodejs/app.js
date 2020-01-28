@@ -33,11 +33,7 @@ const options = {
 const kafka = require("kafka-node"),
     Producer = kafka.HighLevelProducer,
     Consumer = kafka.Consumer,
-    client = new kafka.KafkaClient(KAFKA_HOST, 'nodejs-incident-service-client-id', {
-        sessionTimeout: 300,
-        spinDelay: 100,
-        retries: 2
-    }),
+    client = new kafka.KafkaClient({kafkaHost: KAFKA_HOST}),
     producer = new Producer(client),
 
     consumer = new Consumer(client, [{topic: kafka_topic_in, partition: 0}], options);
