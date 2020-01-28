@@ -4,6 +4,17 @@ var express = require('express');
 const bodyParser = require('body-parser');
 const uuid = require('uuid/v1');
 
+var objectMapper = require('object-mapper');
+var mapping = {
+    "lat": "lat",
+    "lon": "lon",
+    "numberOfPeople": "numberOfPeople",
+    "medicalNeeded": "medicalNeeded",
+    "timestamp": "timestamp",
+    "id": "id",
+    "status": "status"
+};
+
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -84,10 +95,10 @@ app.post('/incidents', function (req, res) {
     const incident = req.body;
     incident.id = uuid();
     incident.status = "REPORTED";
-
+    incident.timestamp = Date.now();
     console.log("adding incident", incident);
     incidents.set(incident.id, incident);
-    sendToKafkaAsJson(kafka_topic_out, incident);
+    sendToKafkaAsJson(kafka_topic_out, objectMapper(incident, mapping));
     res.json(incident);
 });
 
@@ -107,8 +118,6 @@ app.get('/incidents/:status', function (req, res) {
         return i.status === req.params.status;
     }));
 });
-
-//
 
 app.get('/incidents/incident/:id', function (req, res) {
     console.log("get by id called for ", req.params.id);
