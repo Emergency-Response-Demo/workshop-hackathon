@@ -11,8 +11,7 @@ var mapping = {
     "numberOfPeople": "numberOfPeople",
     "medicalNeeded": "medicalNeeded",
     "timestamp": "timestamp",
-    "id": "id",
-    "status": "status"
+    "id": "id"
 };
 
 var app = express();
