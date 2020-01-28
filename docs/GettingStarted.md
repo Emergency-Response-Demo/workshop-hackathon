@@ -101,11 +101,11 @@ bin/zookeeper-server-start.sh config/zookeeper.properties
 bin/kafka-server-start.sh config/server.properties
 
 # Creating the topic
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic orders
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic-incident-event
 
 # Listening to the topic on the console
-bin/kafka-console-consumer.sh --topic topic-incident-event --from-begining
+bin/kafka-console-consumer.sh --topic topic-incident-event --from-beginning --bootstrap-server localhost:9092
 
 # Sending message into a topic
-bin/kafka-console-producer.sh --broker-list localhost:9092 --topic topic-incident-command
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic topic-incident-event
    ```
