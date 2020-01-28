@@ -133,6 +133,10 @@ app.get('/incidents/victim/byname/:name', function (req, res) {
     }));
 });
 
+app.get('/actuator/health', function (req, res) {
+        res.status(200).send();
+});
+
 app.listen(PORT, function () {
     console.log('app listening on port', PORT);
 });
