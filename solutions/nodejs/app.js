@@ -33,6 +33,7 @@ const options = {
 const kafka = require("kafka-node"),
     Producer = kafka.HighLevelProducer,
     Consumer = kafka.Consumer,
+    KeyedMessage = kafka.KeyedMessage,
     client = new kafka.KafkaClient({kafkaHost: KAFKA_HOST}),
     producer = new Producer(client),
 
@@ -52,17 +53,16 @@ consumer.on("message", function (message) {
 });
 
 function sendToKafkaAsJson(topic, message) {
-
     let payloads = [
         {
             topic: topic,
-            messages: JSON.stringify({
+            messages: new KeyedMessage(message.id, JSON.stringify({
                 id: message.id,
                 timestamp: Date.now(),
                 messageType: "IncidentReportedEvent",
                 invokingService: "IncidentService",
                 body: message
-            })
+            }))
         }
     ];
     producer.send(payloads, (err) => {
