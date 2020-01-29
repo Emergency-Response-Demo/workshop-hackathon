@@ -6,9 +6,9 @@ The emergency response solution is comprised by several microservices as describ
 
 ![high level description of the incident service](../assets/incident_highlevel.png)
 
-As you can see in above diagram, the Incident Service consists of different parts. Clients connect to a REST API, which enable other services to access information about incidents. An incident consists of one or more persons in need of help as well as a location. For all properties of an incident, please refer to he [OpenAPI specification for the Incident Service](https://raw.githubusercontent.com/Emergency-Response-Demo/incident-service/master/openapi.json), which also contains usefull information about, which services to implement, as well as which message formats to exchange with Kafka. Each time an incident is created, an _IncidentReportedEvent_ must be sent. Other services will send a _UpdateIncidentCommand_ to notify the Incident Service on any changes to an incident.
+As you can see in above diagram, the Incident Service consists of different parts. Clients connect to a REST API, which enable other services to access information about incidents. An incident consists of one or more persons in need of help as well as a location. For all properties of an incident, please refer to the [OpenAPI specification for the Incident Service](https://raw.githubusercontent.com/Emergency-Response-Demo/incident-service/master/openapi.json), which also contains useful information about, which services to implement, as well as which message formats to exchange with Kafka. Each time an incident is created, an _IncidentReportedEvent_ must be sent. Other services will send a _UpdateIncidentCommand_ to notify the Incident Service on any changes to an incident.
 
-Finally the Incident Service implements a health check API to let the cluster know if the service is up and running.
+Finally the Incident Service implements a health check API to let the OpenShift cluster know if the service is up and running.
 
 Please refer to the following sections for more details on each topic. Be aware that this document describes a full implementation of the service. For testing/evaluation purposes, you can create a minimal solution to get the Incident Service working with the other components. Such a solution only needs to include:
 * REST API implementation
@@ -16,22 +16,22 @@ Please refer to the following sections for more details on each topic. Be aware 
 * Persistence can be replaced by an ephemeral solution (like storing Incidents in a LinkedList)
 
 ## REST API implementation
-The service exposes a rest API as specified in the [OpenAPI specification](https://raw.githubusercontent.com/Emergency-Response-Demo/incident-service/master/openapi.json). The service exposes five paths and any implementation must comply with this interface.
+The service exposes a REST API as specified in the [OpenAPI specification](https://raw.githubusercontent.com/Emergency-Response-Demo/incident-service/master/openapi.json). The service exposes five paths and any implementation must comply with this interface.
 
-Example of an incident json
+Example of an incident JSON
 ```
 {
-	"lat": "34.25184", 
-	"lon": "-77.89708", 
-	"numberOfPeople": 9, 
-	"victimName": "Mr Test", 
-	"victimPhoneNumber": "(651) 555-9526", 
+	"lat": "34.25184",
+	"lon": "-77.89708",
+	"numberOfPeople": 9,
+	"victimName": "Mr Test",
+	"victimPhoneNumber": "(651) 555-9526",
 	"medicalNeeded": true
 }
 ```
 
 ## Persistence
-The incident service will need some kind of persistence. There are no requirements on specific storage solutions, but keep in mind that the Incident service is a microservice, so any implementation needs to be able to be restarted - possibly in another node in the cluster.
+The incident service will need some kind of persistence. There are no requirements on specific storage solutions, but keep in mind that the Incident service is a microservice, so any implementation needs to be able to be restarted - possibly in another node in the cluster. And keep in mind there may be multiple instances of the service running simultaneously.
 * All incidents received must be persisted and returned on later calls.
 * There are no requirements on specific storage solutions, but keep in mind that we work with microservices, so solutions which enable moving workloads easily are preferred.
 
@@ -73,16 +73,16 @@ Example of _UpdateIncidentCommand_:
   "invokingService":"IncidentProcessService",
   "timestamp":1573815193958,
   "body":{
-    "incident":{
-      "id":"ea9f2f52-2b56-448b-b388-b6ff16368050",
-      "status":"RESCUED"
-    }
+	"incident":{
+	  "id":"ea9f2f52-2b56-448b-b388-b6ff16368050",
+	  "status":"RESCUED"
+	}
   }
 }
 ```
 
 ## Health service
-A full implementation must provide an endpoint _/actuator/health_, which can tell wether the service is up and running. Only requirement is, that it returns http code 200 if the service is up.
+A full implementation must provide an endpoint _/actuator/health_, which can tell whether the service is up and running. Only requirement is, that it returns HTTP code 200 if the service is up.
 
 ## Monitoring
-Ask the tech lead
+Implement /metrics end point giving out OpenMetrics format Prometheus understands. Ask the tech lead for more details on this.
