@@ -4,16 +4,6 @@ var express = require('express');
 const bodyParser = require('body-parser');
 const uuid = require('uuid/v1');
 
-var objectMapper = require('object-mapper');
-var mapping = {
-    "lat": "lat",
-    "lon": "lon",
-    "numberOfPeople": "numberOfPeople",
-    "medicalNeeded": "medicalNeeded",
-    "timestamp": "timestamp",
-    "id": "id"
-};
-
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -90,14 +80,25 @@ function sendToKafkaAsJson(topic, message) {
 
 }
 
-app.post('/incidents', function (req, res) {
+function filterFields(incident) {
+    return {
+        id: incident.id,
+        lat: incident.lat,
+        lon: incident.lon,
+        numberOfPeople: incident.numberOfPeople,
+        medicalNeeded: incident.medicalNeeded,
+        timestamp: incident.timestamp
+    };
+}
+
+app.post('/incidents', (req, res) => {
     const incident = req.body;
     incident.id = uuid();
     incident.status = "REPORTED";
     incident.timestamp = Date.now();
     console.log("adding incident", incident);
     incidents.set(incident.id, incident);
-    sendToKafkaAsJson(kafka_topic_out, objectMapper(incident, mapping));
+    sendToKafkaAsJson(kafka_topic_out, filterFields(incident));
     res.json(incident);
 });
 
