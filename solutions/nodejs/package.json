@@ -16,7 +16,6 @@
     "express": "^4.13.4",
     "kafka-node": "^5.0.0",
     "nodemon": "^1.17.3",
-    "object-mapper": "^6.2.0",
     "uuid": "^3.4.0"
   }
 }
